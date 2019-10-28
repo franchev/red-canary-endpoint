@@ -1,74 +1,70 @@
 import logging
 import platform
+from PlatformEndpoint import *
+import argparse
+
 
 class Endpoint:
     """ Class to gather endpoint activity across different platforms
     """
-
-
+    platformObject = ""
     def __init__(self):
-        # Initiate Platform Object to call the process class
-        self.setPlatform()
+        self.platformObject = PlatformEndpoint()
 
-    def createLogger(self, loggingFormat):
+    def getArgs(self, argv=None):
+        parser = argparse.ArgumentParser(description="Red Canary Endpoint")
+        parser.add_argument("start_process", type=str, help="start A process. Takes subarguments")
+        return parser.parse_args(argv)
+
+    def createLogger(self):
         logger = logging.getLogger(__name__)
         
         # Create handlers
         handler = logging.FileHandler('file.log')
         handler.setLevel(logging.INFO)
-        format = logging.Formatter(loggingFormat)
-        handler.setFormatter(format)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
         logger.addHandler(handler)
         return logger
 
-    def setPlatformObject(self):
-        """
-        simple method to platform object 
-        """
-        self.platform.object = Platform()
+    def setLoggingFormatter(self, logger, formatter):
+        handler = logging.FileHandler('file.log')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 
 
-    def startProcess(self):
+    def startProcess(self, logger, processName, processCommand=None):
         # creating a custom logger
-        formatterForLogin = "%(asctime)s - %s - %s - %s" % (username, processName, processId)
-        processLogger = self.createLogger(formatterForLogin)
-        self.platform.object.startAProcess(username, processName, processLogger, command)
+        self.platformObject.startAProcess(processName, logger, processCommand)
 
-    def fileManipulator(self, descriptor, filePath, filename):
-        formatterForLogin = "%(asctime)s - %s - %s - %s - %s - %s - %s" % ( filePath, descriptor, 
-                                                             username, processName, processCommandLine, processId)
-        fileManipulatorLogger = self.createLogger(formatterForLogin)
+    def fileManipulator(self, descriptor, filePath, filename, logger):
         if descriptor.lower() == "create":
-            self.platform.object.createFile(filePath, filename, fileManipulatorLogger)
+            self.platformObject.createAFile(filePath, filename, logger)
         elif descriptor.lower() == "modify":
-            self.platform.object.modifyFile(filePath, filename, fileManipulatorLogger)
+            self.platformObject.modifyAFile(filePath, filename, logger, data="hello world")
         elif descriptor.lower() == "delete":
-            self.platform.object.deleteFile(filePath, filename, fileManipulatorLogger)
+            self.platformObject.deleteAFile(filePath, filename, logger)
         else:
-            processLogger.WARNING("your descriptor %s does not exist, please either provide create, modify or delete as a descriptor" %s descriptor)
+            logger.warning("your descriptor %s does not exist, please either provide create, modify or delete as a descriptor" % descriptor)
 
-  
-    def createFile(self, filePath, filename, logger):
-        pass
-
-    def modifyFile(self, filePath, filename, logger):
-        fullFile = "%s/%s" % (filePath, filename)
-        try:
-            pass
-        except:
-            
-
-    def deleteFile(self, filePath, filename, logger):
-        try:
-            os.remove("%s/%s" % (filePath/filename))
-            logger.INFO("Successfully deleted file %s/%s" % (filePath, filename))
-        except Exception as error:
-            logger.ERROR("Error while deleting file %s/%s" % (filePath, filename))
 
     def establishNetworkConnection(self):
-        formatterForLogin = "%(asctime)s - %s - %s - %s" % (username, processName, processId)
-        processLogger = self.createLogger(formatterForLogin)
         pass
 
     def transmitData(self):
         pass
+
+
+# beginning of program
+if __name__ == "__main__":
+    # create endpoint object
+    endpoint = Endpoint()
+
+    # create logger
+    print "going to create logger"
+    logger = endpoint.createLogger()
+
+    # testing starting a process
+    endpoint.startProcess(logger, "python") 
+
+
