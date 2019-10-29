@@ -9,7 +9,12 @@ class Endpoint:
     """
     platformObject = ""
     def __init__(self):
-        self.platformObject = PlatformEndpoint()
+        pass
+
+    def setPlatformObject(self, logger, handler):
+        self.platformObject = PlatformEndpoint(logger, handler)
+        self.logger = logger
+        self.handler = handler
 
     def getArgs(self, argv=None):
         parser = argparse.ArgumentParser(description="Red Canary Endpoint")
@@ -17,42 +22,35 @@ class Endpoint:
         return parser.parse_args(argv)
 
     def createLogger(self):
+        logFormatter = logging.Formatter("%(asctime)s - %(message)s")
+
+        # configure file handler
+        fileHandler = logging.FileHandler('file.log')
+        fileHandler.setFormatter(logFormatter)
+
         logger = logging.getLogger(__name__)
-        
-        # Create handlers
-        handler = logging.FileHandler('file.log')
-        handler.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-        return logger
 
-    def setLoggingFormatter(self, logger, formatter):
-        handler = logging.FileHandler('file.log')
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
 
+        logger.addHandler(fileHandler)
+        return logger, fileHandler
 
-    def startProcess(self, logger, processName, processCommand=None):
+    def startProcess(self, processName, processCommand=None):
         # creating a custom logger
-        self.platformObject.startAProcess(processName, logger, processCommand)
+        self.platformObject.startAProcess(processName, processCommand)
 
-    def fileManipulator(self, descriptor, filePath, filename, logger):
+    def fileManipulator(self, descriptor, filePath, filename, data="hello world"):
         if descriptor.lower() == "create":
-            self.platformObject.createAFile(filePath, filename, logger)
+            self.platformObject.createAFile(filePath, filename)
         elif descriptor.lower() == "modify":
-            self.platformObject.modifyAFile(filePath, filename, logger, data="hello world")
+            self.platformObject.modifyAFile(filePath, filename, data="hello world")
         elif descriptor.lower() == "delete":
-            self.platformObject.deleteAFile(filePath, filename, logger)
+            self.platformObject.deleteAFile(filePath, filename)
         else:
             logger.warning("your descriptor %s does not exist, please either provide create, modify or delete as a descriptor" % descriptor)
 
-
-    def establishNetworkConnection(self):
-        pass
-
-    def transmitData(self):
-        pass
+    def start_connections(self, host, port, data, num_conns=1):
+        self.platformObject.transmitData(host, port, num_conns, data)
 
 
 # beginning of program
@@ -62,9 +60,18 @@ if __name__ == "__main__":
 
     # create logger
     print "going to create logger"
-    logger = endpoint.createLogger()
+    logger, handler = endpoint.createLogger()
+
+    # set platformEndpoint object
+    endpoint.setPlatformObject(logger, handler)
 
     # testing starting a process
-    endpoint.startProcess(logger, "python") 
+    #endpoint.startProcess("python")
+
+    # testing creating a file
+    endpoint.fileManipulator("create", "/Users/francescakoulikov/red-canary", "test.txt")
+
+    # testing deleting a file
+    endpoint.fileManipulator("modify", "/Users/francescakoulikov/red-canary", "test.txt", data="what am I to do")
 
 
