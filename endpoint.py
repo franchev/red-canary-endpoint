@@ -1,8 +1,5 @@
 import logging
 import platform
-import PlatformEndpoint
-import DataTransmitter
-import LoggerProvider
 import sys
 from PlatformEndpoint import *
 from DataTransmitter import *
