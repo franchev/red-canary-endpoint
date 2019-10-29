@@ -11,6 +11,13 @@ class DataTransmitter:
         self.protocol = protocol
 
     def setSock(self):
+        '''
+        Method to set socket to transmit data
+
+        Args: none
+        Returns:
+            socket: sock
+        '''
         try:
             if self.protocol.lower() == 'udp':
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -22,6 +29,12 @@ class DataTransmitter:
         return self.sock
 
     def connect(self):
+        '''
+        Method to connect a socket to transmit data
+
+        Args: None
+        Returns: None
+        '''
         try:
             self.sock.connect((self.host, self.port))
             self.logger.info("established connection to send data")
@@ -29,6 +42,12 @@ class DataTransmitter:
             self.logger.error("could not establish connection to send data. Review error %s" % str(exc))
 
     def sendData(self, msg):
+        '''
+        Method to transmit a message
+        Args:
+            param1: msg
+        Returns: none
+        '''
         try:
             MSGLEN = len(msg)
             totalsent = 0
