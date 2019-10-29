@@ -38,7 +38,7 @@ class LoggerProvider:
             elif extraParameters['action'].lower() == 'network':
                 extraFormatterString = "destination address/port: %s/%s - source address/port: %s/%s - amount of data send %d - \
                                        protocol of data sent: %s" % (extraParameters['destinationAddress'], extraParameters['destinationPort'],
-                                                                     extraFormatterString['sourceAddress'], extraParameters['sourcePort'],
+                                                                     extraParameters['sourceAddress'], extraParameters['sourcePort'],
                                                                      extraParameters['amount'], extraParameters['protocol'])
                 formatter = logging.Formatter('%(asctime)s ' + extraFormatterString + defaultFormatterString + ' message: %(message)s')
         else:

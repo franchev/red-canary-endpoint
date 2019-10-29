@@ -47,12 +47,10 @@ class Endpoint:
     def transmitData(self, host, port, data, protocol='tcp'):
         # DataTransmitter object
         msgLen = len(data)
-        sourceHostName = socket.gethostbyname()
-        sourceHost = socket.gethostbyname(sourceHostName)
         dataTransmissionCustomFormatterDict = {
             'destinationAddress': host,
             'destinationPort': port,
-            'sourceAddress': sourceHost,
+            'sourceAddress': 'localhost',
             'sourcePort': None,
             'protocol': protocol,
             'amount': msgLen,
@@ -62,6 +60,7 @@ class Endpoint:
         dataTransmitterObject = DataTransmitter(host, port, self.logger)
         socket = dataTransmitterObject.setSock()
         sourceHost, sourcePort = socket.getsockname()
+        dataTransmissionCustomFormatterDict['sourceHost'] = sourceHost
         dataTransmissionCustomFormatterDict['sourcePort'] = sourcePort
         self.loggerObject.setCustomLoggerFormatter(extraParameters=dataTransmissionCustomFormatterDict)
         dataTransmitterObject.connect()
