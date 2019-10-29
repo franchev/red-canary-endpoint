@@ -4,6 +4,10 @@ class ArgParseProvider:
     """ Class to get & set arguments and subarguments from user """
 
     def printhelpArgs(self):
+        '''Method to print a string help
+        Args: None
+        Returns: None
+        '''
         helpMessage = """
         endpoint - redcanary endpoint program
         Usage: endpoint [options] [suboptions]
@@ -47,6 +51,16 @@ class ArgParseProvider:
         exit
     
     def setProcessArgs(self, args):
+        '''
+        Method to set args associated to a process action
+        
+        Args: 
+            param1: args
+        
+        Returns:
+            str: processPathArg 
+            str: processCommandArg
+        '''
         processPathArg = ""
         processCommandArg = ""
         if len(args) >= 3:
@@ -58,6 +72,17 @@ class ArgParseProvider:
         return processPathArg, processCommandArg
 
     def setFileArgs(self, args):
+        '''
+        Method to set args associated to a file action
+        
+        Args: 
+            param1: args
+        
+        Returns:
+            str: filePathArg 
+            str: data
+            str: actionToPerform
+        '''
         filePathArg = ""
         fileAction = ['create', 'delete', 'modify']
         data = ""
@@ -79,6 +104,18 @@ class ArgParseProvider:
         return actionToPerform, filePathArg, data
 
     def setTransmitArgs(self, args):
+        '''
+        Method to set args associated to a transmit action
+        
+        Args: 
+            param1: args
+        
+        Returns:
+            str: destinationAddressArg
+            str: destinationPortArg
+            str: dataArg
+            str: protocol
+        '''
         destinationAddressArg = ""
         destinationPortArg = ""
         dataArg = ""
