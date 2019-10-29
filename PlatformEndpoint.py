@@ -38,43 +38,43 @@ class PlatformEndpoint():
             self.logger.error("Could not start process %s, error %s" % (processName, str(e)))
 
 
-    def createAFile(self, filepath, filename):
+    def createAFile(self, filepath):
         try:
-            open("%s/%s" % (filepath, filename), 'a').close()
-            loggerDict={'descriptor': 'create', 'fullPath': "%s/%s" % (filepath, filename), 'action': 'fileManipulation' }
+            open("%s" % filepath, 'a').close()
+            loggerDict={'descriptor': 'create', 'fullPath': "%s" % filepath, 'action': 'fileManipulation' }
             self.loggerObject.setCustomLoggerFormatter(extraParameters=loggerDict)
-            self.logger.info("Create file %s/%s " % (filepath, filename))
+            self.logger.info("Create file %s " % filepath)
         except OSError as e:
             if e.errno != os.errno.ENOENT:
-                self.logger.error("cannot create file %s/%s because of error %s" % (filepath, filename, e))
+                self.logger.error("cannot create file %s because of error %s" % (filepath, e))
             else:
-                self.logger.warning("Error creating file %s/%s because of error %s" % (filepath, filepath, e))
+                self.logger.warning("Error creating file %s because of error %s" % (filepath, e))
 
-    def modifyAFile(self, filepath, filename, data, action="append"):
+    def modifyAFile(self, filepath, data, action="append"):
         try:
-            loggerDict={'descriptor': 'modify', 'fullPath': "%s/%s" % (filepath, filename), 'action': 'fileManipulation' }
+            loggerDict={'descriptor': 'modify', 'fullPath': "%s" % filepath, 'action': 'fileManipulation' }
             self.loggerObject.setCustomLoggerFormatter(extraParameters=loggerDict)
             if action.lower == "prepend":
-                with open("%s/%s" % (filepath, filename), "r+") as fileToModify:
+                with open("%s" % filepath, "r+") as fileToModify:
                     oldState = fileToModify.read()
                     fileToModify.seek(0)
                     fileToModify.write(data + oldState)
-                    self.logger.info("added data to file %s/%s" % (filepath, filename))
+                    self.logger.info("added data to file %s" % filepath)
             else:
-                with open("%s/%s" %(filepath, filename), "a+") as fileToModify:
+                with open("%s" %filepath, "a+") as fileToModify:
                     fileToModify.write(data)
-                    self.logger.info("added data to file %s/%s" % (filepath, filename))
+                    self.logger.info("added data to file %s" % filepath)
         except Exception as e:
-            self.logger.error("Error while modifying file %s/%s. Error %s" % (filepath, filename, str(e)))
+            self.logger.error("Error while modifying file %s. Error %s" % (filepath, str(e)))
             
 
 
-    def deleteAFile(self, filepath, filename):
+    def deleteAFile(self, filepath):
         try:
-            loggerDict={'descriptor': 'delete', 'fullPath': "%s/%s" % (filepath, filename), 'action': 'fileManipulation' }
+            loggerDict={'descriptor': 'delete', 'fullPath': "%s" % filepath, 'action': 'fileManipulation' }
             self.loggerObject.setCustomLoggerFormatter(extraParameters=loggerDict)
-            os.remove("%s/%s" % (filepath, filename))
-            self.logger.info = "Deleted file %s/%s " % (filepath, filename)
+            os.remove("%s" % filepath)
+            self.logger.info = "Deleted file %s " % filepath
         except Exception as e:
-                self.logger.error= "an error occurred, while deleting file %s/%s. error: %s" % (filepath, filename, str(e))
+                self.logger.error= "an error occurred, while deleting file %s. error: %s" % (filepath, str(e))
     
