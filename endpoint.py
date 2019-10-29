@@ -11,20 +11,47 @@ from ArgParseProvider import *
 
 
 class Endpoint:
-    """ Class to gather endpoint activity across different platforms
-    """
+    """ Class to gather endpoint activity across different platforms """
     def setLogger(self):
+        '''
+        Method to set logger
+
+        Args: None
+        Returns: None
+        '''
         self.loggerObject = LoggerProvider()
         self.logger, self.handler = self.loggerObject.createLogger()
 
     def setPlatformObject(self):
+        '''
+        Method to set platform object
+
+        Args: None
+        Returns: None
+        '''
         self.platformObject = PlatformEndpoint(self.loggerObject, self.logger, self.handler)
 
     def startProcess(self, processName, processCommand=None):
-        # creating a custom logger
+        '''
+        Method to start a process
+
+        Args: 
+            param1: processName
+            param2: processCommand (optional)
+        Returns: None
+        '''
         self.platformObject.startAProcess(processName, processCommand)
 
     def fileManipulator(self, descriptor, fullFilePath, data=""):
+        '''
+        Method to do file manipulation
+
+        Args:
+            param1: descriptor
+            param2: fullFilePath
+            param3: data (optional)
+        Returns: none
+        '''
         if descriptor.lower() == "create":
             self.platformObject.createAFile(fullFilePath)
         elif descriptor.lower() == "modify":
@@ -35,6 +62,17 @@ class Endpoint:
             self.logger.warning("your descriptor %s does not exist, please either provide create, modify or delete as a descriptor" % descriptor)
 
     def transmitData(self, host, port, data, protocol='tcp'):
+        '''
+        Method to transmit data
+
+        Args:
+            param1: host 
+            param2: port
+            param3: data
+            param4: protocol
+        
+        Returns: None
+        '''
         # DataTransmitter object
         msgLen = len(data)
         dataTransmissionCustomFormatterDict = {
