@@ -14,6 +14,14 @@ class PlatformEndpoint():
         self.handler= handler 
 
     def startAProcess(self, processName, processCommand=None):
+        '''
+        Method to start a process
+        Args:
+          param1: processName
+          param2: processCommand (optional)
+        
+        Returns: None
+        '''
         process = None
         try:
             if self.runningPlatform.lower() == "windows":
@@ -39,6 +47,14 @@ class PlatformEndpoint():
 
 
     def createAFile(self, filepath):
+        '''
+        Method to create a file
+
+        Args:
+            param1: filepath
+        
+        Returns: None
+        '''
         try:
             open("%s" % filepath, 'a').close()
             loggerDict={'descriptor': 'create', 'fullPath': "%s" % filepath, 'action': 'fileManipulation' }
@@ -51,6 +67,16 @@ class PlatformEndpoint():
                 self.logger.warning("Error creating file %s because of error %s" % (filepath, e))
 
     def modifyAFile(self, filepath, data, action="append"):
+        '''
+        Method to modify a file
+
+        Args:
+            param1: filepath
+            param2: data
+            param3: action
+        
+        Returns: None
+        '''
         try:
             loggerDict={'descriptor': 'modify', 'fullPath': "%s" % filepath, 'action': 'fileManipulation' }
             self.loggerObject.setCustomLoggerFormatter(extraParameters=loggerDict)
@@ -70,6 +96,14 @@ class PlatformEndpoint():
 
 
     def deleteAFile(self, filepath):
+        '''
+        Method to delete a file
+        
+        Args:
+            param1: filepath
+
+        Returns: None
+        '''
         try:
             loggerDict={'descriptor': 'delete', 'fullPath': "%s" % filepath, 'action': 'fileManipulation' }
             self.loggerObject.setCustomLoggerFormatter(extraParameters=loggerDict)
