@@ -98,11 +98,6 @@ if __name__ == "__main__":
     # create endpoint object
     endpoint = Endpoint()
     
-    # create logger
-    endpoint.setLogger()
-
-    # create platform object
-    endpoint.setPlatformObject()
 
     # create ArgParseProvider object
     argparseProvider = ArgParseProvider()
@@ -111,6 +106,12 @@ if __name__ == "__main__":
     if len(sys.argv) <= 1 or sys.argv[1].lower() == 'help':
        argparseProvider.printhelpArgs()
     else:
+        # create logger
+        endpoint.setLogger()
+
+        # create platform object
+        endpoint.setPlatformObject()
+
         if sys.argv[1].lower() == 'process':
             processPath, processCMD = argparseProvider.setProcessArgs(sys.argv)
             endpoint.startProcess(processPath, processCMD) if processCMD else endpoint.startProcess(processPath)    

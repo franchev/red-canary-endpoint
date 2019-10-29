@@ -45,7 +45,7 @@ class ArgParseProvider:
                to delete a file:
                    python Endpoint.py file delete /usr/local/bin/test.txt
                to transmit data:
-                   python Endpoint.py trasmit 192.168.1.23 443 [b'data1 to send'] 
+                   python Endpoint.py transmit 192.168.1.23 443 [b'data1 to send'] 
         """
         print helpMessage
         exit
