@@ -3,20 +3,16 @@ import platform
 import PlatformEndpoint
 import DataTransmitter
 import LoggerProvider
-import argparse
-import socket
+import sys
 from PlatformEndpoint import *
 from DataTransmitter import *
 from LoggerProvider import *
+from ArgParseProvider import *
 
 
 class Endpoint:
     """ Class to gather endpoint activity across different platforms
     """
-    platformObject = ""
-    def __init__(self):
-        pass
-
     def setLogger(self):
         self.loggerObject = LoggerProvider()
         self.logger, self.handler = self.loggerObject.createLogger()
@@ -24,23 +20,17 @@ class Endpoint:
     def setPlatformObject(self):
         self.platformObject = PlatformEndpoint(self.loggerObject, self.logger, self.handler)
 
-    def getArgs(self, argv=None):
-        parser = argparse.ArgumentParser(description="Red Canary Endpoint")
-        parser.add_argument("start_process", type=str, help="start A process. Takes subarguments")
-        return parser.parse_args(argv)
-
-
     def startProcess(self, processName, processCommand=None):
         # creating a custom logger
         self.platformObject.startAProcess(processName, processCommand)
 
-    def fileManipulator(self, descriptor, filePath, filename, data="hello world"):
+    def fileManipulator(self, descriptor, fullFilePath, data=""):
         if descriptor.lower() == "create":
-            self.platformObject.createAFile(filePath, filename)
+            self.platformObject.createAFile(fullFilePath)
         elif descriptor.lower() == "modify":
-            self.platformObject.modifyAFile(filePath, filename, data="hello world")
+            self.platformObject.modifyAFile(fullFilePath, data)
         elif descriptor.lower() == "delete":
-            self.platformObject.deleteAFile(filePath, filename)
+            self.platformObject.deleteAFile(fullFilePath)
         else:
             self.logger.warning("your descriptor %s does not exist, please either provide create, modify or delete as a descriptor" % descriptor)
 
@@ -69,25 +59,28 @@ class Endpoint:
 if __name__ == "__main__":
     # create endpoint object
     endpoint = Endpoint()
-
+    
     # create logger
     endpoint.setLogger()
 
-    # set platformEndpoint object
-    #endpoint.setPlatformObject(logger, handler)
+    # create platform object
+    endpoint.setPlatformObject()
 
-    # testing starting a process
-    #endpoint.startProcess("python")
+    # create ArgParseProvider object
+    argparseProvider = ArgParseProvider()
 
-    # testing creating a file
-    #endpoint.fileManipulator("create", "/Users/francescakoulikov/red-canary", "test.txt")
-
-    # testing deleting a file
-    #endpoint.fileManipulator("modify", "/Users/francescakoulikov/red-canary", "test.txt", data="what am I to do")
-
-    # Testing transmitting data
-    host = "https://postman-echo.com/post"
-    port = 443
-    data = [b'Message 1 from frany.', b'Message 2 from frany.']
-    endpoint.transmitData(host, port, data)
-
+    # getting arguments from users and operating as such
+    if len(sys.argv) <= 1 or sys.argv[1].lower() == 'help':
+       argparseProvider.printhelpArgs()
+    else:
+        if sys.argv[1].lower() == 'process':
+            processPath, processCMD = argparseProvider.setProcessArgs(sys.argv)
+            endpoint.startProcess(processPath, processCMD) if processCMD else endpoint.startProcess(processPath)    
+        elif sys.argv[1].lower() == 'file':
+            action, filePath, data = argparseProvider.setFileArgs(sys.argv)
+            endpoint.fileManipulator(action, filePath, data)
+        elif sys.argv[1].lower() == 'transmit':
+            destinationAddress, destinationPort, dataToTransmit, protocol = argparseProvider.setTransmitArgs(sys.argv)
+            endpoint.transmitData(destinationAddress, destinationPort, dataToTransmit, protocol)
+        else:
+            argparseProvider.printhelpArgs()
