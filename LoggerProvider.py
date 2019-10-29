@@ -3,10 +3,16 @@ import os
 import getpass
 
 class LoggerProvider:
-    def __init__(self):
-        pass
-
+    ''' Class to set Logger '''
     def createLogger(self):
+        '''
+        Method to create a logger 
+
+        Args: None
+        Returns:
+            loggingObject: logger
+            loggingHandler: filehandler
+        '''
         defaultLogFormatter = logging.Formatter("%(asctime)s - %(message)s")
 
         # configure file handler
@@ -24,6 +30,17 @@ class LoggerProvider:
 
 
     def setCustomLoggerFormatter(self, process=None, processName="python", processCommand="None", extraParameters=None):
+        '''
+        Method to set custom logger formatter depending on the action taken place
+
+        Args:
+            param1: process (optional)
+            param2: processName (optional)
+            param3: processCommand (optional)
+            param4: extraParameters (optional)
+
+        Returns: None
+        '''
         if process:
             processId = str(process.pid)
         else:
